@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import View, TemplateView
 from.models import *
 
 
@@ -73,9 +73,44 @@ class AddCarroView(TemplateView):
         return context
         
 
+class ManipularCarroView(View):
+    def get(self,request,*args , **kwargs):
+        cp_id = self.kwargs["cp_id"]
+        acao = request.GET.get("acao")
+        cp_obj = CarroProduto.objects.get(id=cp_id)
+        carro_obj = cp_obj.carro
+                
+        if acao == "inc":
+            cp_obj.quantidade += 1
+            cp_obj.subtotal += cp_obj.avaliacao
+            cp_obj.save()
+            carro_obj.total += cp_obj.avaliacao
+            carro_obj.save()
+            
+        elif acao == "dcr":
+            pass
+        elif acao == "rmv":
+            pass
+        else:
+            pass
+        
+        return redirect("lojaapp:meucarro")
+        
+
 class MeuCarroView(TemplateView):
     template_name = "meucarro.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        carro_id = self.request.session.get("carro_id", None)
         
+        if carro_id:
+            carro = Carro.objects.get(id=carro_id)
+        else:
+            carro = None
+        context['carro'] = carro
+        return context
+    
 
 class SobreView(TemplateView):
     template_name = "sobre.html"
