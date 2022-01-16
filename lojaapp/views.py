@@ -88,15 +88,34 @@ class ManipularCarroView(View):
             carro_obj.save()
             
         elif acao == "dcr":
-            pass
+            cp_obj.quantidade -= 1
+            cp_obj.subtotal -= cp_obj.avaliacao
+            cp_obj.save()
+            carro_obj.total -= cp_obj.avaliacao
+            carro_obj.save()
+            if cp_obj.quantidade ==0:
+                cp_obj.delete()
         elif acao == "rmv":
-            pass
+            carro_obj.total -= cp_obj.subtotal
+            carro_obj.save()
+            cp_obj.delete()
         else:
             pass
-        
         return redirect("lojaapp:meucarro")
         
 
+class LimparCarroView(TemplateView):
+     def get(self,request,*args , **kwargs):
+        carro_id = request.session.get("carro_id", None)
+        
+        if carro_id:
+            carro = Carro.objects.get(id=carro_id)
+            carro.carroproduto_set.all().delete()
+            carro.total = 0
+            carro.save()
+            return redirect("lojaapp:meucarro")
+        
+    
 class MeuCarroView(TemplateView):
     template_name = "meucarro.html"
     
@@ -112,6 +131,21 @@ class MeuCarroView(TemplateView):
         return context
     
 
+
+class CheckoutView(TemplateView):
+    template_name = "processar.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        carro_id = self.request.session.get("carro_id", None)
+        
+        if carro_id:
+            carro_obj = Carro.objects.get(id=carro_id)
+        else:
+            carro_obj = None
+        context['carro'] = carro_obj
+        return context
+    
 class SobreView(TemplateView):
     template_name = "sobre.html"
 
