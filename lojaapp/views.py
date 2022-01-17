@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View, TemplateView
+from django.views.generic import View, TemplateView, CreateView
+from django.urls import reverse_lazy
+from.forms import Checar_PedidoForm
 from.models import *
 
 
@@ -132,8 +134,10 @@ class MeuCarroView(TemplateView):
     
 
 
-class CheckoutView(TemplateView):
+class CheckoutView(CreateView):
     template_name = "processar.html"
+    form_class = Checar_PedidoForm
+    success_url = reverse_lazy("lojaapp:home")
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -146,6 +150,14 @@ class CheckoutView(TemplateView):
         context['carro'] = carro_obj
         return context
     
+    def from_validacao(self,form):
+        carro_id = self.request.session.get("carro_id")
+        if carro_id:
+            carro_obj = Carro.objects.get(id=carro_id)
+            form.instance.carro = carro_obj
+            form.instance.carro = carro_obj.total
+            form.instance.carro =
+        
 class SobreView(TemplateView):
     template_name = "sobre.html"
 
