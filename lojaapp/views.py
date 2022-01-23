@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView
 from django.urls import reverse_lazy
-from.forms import Checar_PedidoForm
+from.forms import Checar_PedidoForm, ClienteRegistrarForm
 from.models import *
 
 # CLASSE Home OK
@@ -163,10 +163,26 @@ class CheckoutView(CreateView):
             form.instance.disconto = 0
             form.instance.total = carro_obj.total
             form.instance.pedido_status = "Pedido Recebido"
+            del self.request.session['carro_id']
         else:
             return redirect("lojaapp:home")
         return super().form_valid(form)
         
+
+class ClienteRegistrarView(CreateView):
+    template_name = "clienteregistrar.html"
+    
+    form_class = ClienteRegistrarForm
+    success_url = reverse_lazy("lojaapp:home")
+    
+    def form_valid(self, form):
+        usuario = form.cleaned_data.get("usuario")
+        senha = form.cleaned_data.get("senha")
+        email = form.cleaned_data.get("email")
+        user = User.objects.create_user(usuario,email,senha)
+        form.instance.user = user
+        return super().form_valid(form)
+    
 class SobreView(TemplateView):
     template_name = "sobre.html"
 

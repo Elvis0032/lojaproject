@@ -13,5 +13,6 @@ urlpatterns = [
     path("meu-carro/", MeuCarroView.as_view(), name="meucarro"),
     path("manipular-carro/<int:cp_id>/", ManipularCarroView.as_view(), name="manipularcarro"),
     path("limpar-carro/", LimparCarroView.as_view(), name="limparcarro"),
-    path("checkout/", CheckoutView.as_view(), name="checkout")
+    path("checkout/", CheckoutView.as_view(), name="checkout"),
+    path("registrar/", ClienteRegistrarView.as_view(), name="clienteregistrar"),
 ]
