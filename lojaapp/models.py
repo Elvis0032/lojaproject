@@ -3,7 +3,7 @@ from re import T
 from django.db import models
 from django.contrib.auth.models import User
 
-
+# CLASS CLIENTE OK
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome_completo = models.CharField(max_length=200) 
@@ -13,8 +13,9 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome_completo
      
-    
+#-----------------------------------------------------------------------------------
 
+# CLASS CATEGORIA OK
 class Categoria(models.Model):
     titulo = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -22,7 +23,9 @@ class Categoria(models.Model):
     def __str__(self):
         return self.titulo
     
+#-----------------------------------------------------------------------------------
 
+#CLASSE PRODUTO OK
 class Produto(models.Model):
     titulo = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -37,7 +40,8 @@ class Produto(models.Model):
     
     def __str__(self):
         return self.titulo
-    
+#-------------------------------------------------------------------------
+#CLASSE CARRO OK
 class Carro(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True)
     total = models.PositiveIntegerField(default=0)
@@ -46,15 +50,18 @@ class Carro(models.Model):
     def __str__(self):
         return "Carro:" + str(self.id)
     
-        
+#-----------------------------------------------------------------------------------       
+#CLASSE CARRO OK
 class CarroProduto(models.Model):
     carro = models.ForeignKey(Carro,on_delete=models.CASCADE)
     produto = models.ForeignKey(Produto,on_delete=models.CASCADE)
     avaliacao = models.PositiveIntegerField()
     quantidade = models.PositiveIntegerField()
     subtotal = models.PositiveIntegerField()
+    
     def __str__(self):
         return "Carro:" + str(self.carro.id) + "CarroProduto:" + str(self.id)
+  #-----------------------------------------------------------------------------------
     
 PEDIDO_STATUS=(
     ("Pedido Recebido","Pedido Recebido"),
@@ -63,6 +70,7 @@ PEDIDO_STATUS=(
     ("Pedido Completado","Pedido Completado"),
     ("Pedido Cancelado","Pedido Cancelado"),
 )
+ #CLASSE CARRO OK
     
 class Pedido_order(models.Model):
     carro = models.OneToOneField(Carro, on_delete=models.CASCADE)
@@ -77,7 +85,7 @@ class Pedido_order(models.Model):
     disconto = models.PositiveIntegerField()
     total = models.PositiveIntegerField()
     pedido_status = models.CharField(max_length=50, choices=PEDIDO_STATUS)
-    criado_em = models. DateTimeField(auto_now_add=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return "Pedido_order:" + str(self.id)

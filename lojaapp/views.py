@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from.forms import Checar_PedidoForm
 from.models import *
 
-
+# CLASSE Home OK
 class HomeView(TemplateView):
     template_name = "home.html"
     def get_context_data(self, **kwargs):
@@ -12,13 +12,15 @@ class HomeView(TemplateView):
         context['produto_list'] = Produto.objects.all().order_by("-id")
         return context 
     
+# CLASSE TODOSPRODUTOS OK
 class TodosProdutosView(TemplateView):
     template_name = "todosprodutos.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['todoscategorias'] = Categoria.objects.all()
         return context 
-
+    
+# CLASSE ProdutoDetalhe OK
 class ProdutoDetalheView(TemplateView):
     template_name = "produtodetalhe.html"
     def get_context_data(self, **kwargs):
@@ -29,7 +31,7 @@ class ProdutoDetalheView(TemplateView):
         produto.save()
         context['produto'] = produto
         return context 
-
+# CLASSE AddCarro OK
 class AddCarroView(TemplateView):
     template_name = "addprocarro.html"
     def get_context_data(self, **kwargs):
@@ -74,7 +76,7 @@ class AddCarroView(TemplateView):
             carro_obj.save()
         return context
         
-
+# CLASSE ManipularCarro OK
 class ManipularCarroView(View):
     def get(self,request,*args , **kwargs):
         cp_id = self.kwargs["cp_id"]
@@ -82,7 +84,7 @@ class ManipularCarroView(View):
         cp_obj = CarroProduto.objects.get(id=cp_id)
         carro_obj = cp_obj.carro
                 
-        if acao == "inc":
+        if acao =="inc":
             cp_obj.quantidade += 1
             cp_obj.subtotal += cp_obj.avaliacao
             cp_obj.save()
@@ -105,7 +107,7 @@ class ManipularCarroView(View):
             pass
         return redirect("lojaapp:meucarro")
         
-
+# CLASSE LimparCarro OK
 class LimparCarroView(TemplateView):
      def get(self,request,*args , **kwargs):
         carro_id = request.session.get("carro_id", None)
@@ -117,7 +119,7 @@ class LimparCarroView(TemplateView):
             carro.save()
             return redirect("lojaapp:meucarro")
         
-    
+    # CLASSE MeuCarro OK
 class MeuCarroView(TemplateView):
     template_name = "meucarro.html"
     
@@ -133,9 +135,11 @@ class MeuCarroView(TemplateView):
         return context
     
 
-
+ # CLASSE CheckoutView OK
+ 
 class CheckoutView(CreateView):
     template_name = "processar.html"
+    
     form_class = Checar_PedidoForm
     success_url = reverse_lazy("lojaapp:home")
     
@@ -150,13 +154,18 @@ class CheckoutView(CreateView):
         context['carro'] = carro_obj
         return context
     
-    def from_validacao(self,form):
+    def form_valid(self,form):
         carro_id = self.request.session.get("carro_id")
         if carro_id:
             carro_obj = Carro.objects.get(id=carro_id)
             form.instance.carro = carro_obj
-            form.instance.carro = carro_obj.total
-            form.instance.carro =
+            form.instance.subtotal = carro_obj.total
+            form.instance.disconto = 0
+            form.instance.total = carro_obj.total
+            form.instance.pedido_status = "Pedido Recebido"
+        else:
+            return redirect("lojaapp:home")
+        return super().form_valid(form)
         
 class SobreView(TemplateView):
     template_name = "sobre.html"
