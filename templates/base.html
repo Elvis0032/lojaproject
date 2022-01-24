@@ -17,7 +17,12 @@
         <a href="{% url 'lojaapp:contato' %}">CONTATO</a> |
         <a href="{% url 'lojaapp:todosprodutos' %}">CATEGORIAS</a> |
         <a href="{% url 'lojaapp:meucarro' %}">CARRINHO</a> |
+        {% if request.user.cliente %}
+        Seja Bem-Vindo {{request.user.username}}
+        {% else %}
+        
         <a href="{% url 'lojaapp:clienteregistrar' %}">CADASTRAR CLIENTES</a> |
+        {% endif %}
         <hr>
     </div>
     {% block content %}
