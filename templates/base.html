@@ -12,16 +12,18 @@
 
 <body>
     <div class="container mt-3">
-        <a href="{% url 'lojaapp:home' %}">HOME</a> |
-        <a href="{% url 'lojaapp:sobre' %}">SOBRE</a> |
-        <a href="{% url 'lojaapp:contato' %}">CONTATO</a> |
-        <a href="{% url 'lojaapp:todosprodutos' %}">CATEGORIAS</a> |
-        <a href="{% url 'lojaapp:meucarro' %}">CARRINHO</a> |
+        <a href="{% url 'lojaapp:home'%}">HOME</a> |
+        <a href="{% url 'lojaapp:sobre'%}">SOBRE</a> |
+        <a href="{% url 'lojaapp:contato'%}">CONTATO</a> |
+        <a href="{% url 'lojaapp:todosprodutos'%}">CATEGORIAS</a> |
+        <a href="{% url 'lojaapp:meucarro'%}">CARRINHO</a> |
+
         {% if request.user.cliente %}
         Seja Bem-Vindo {{request.user.username}}
+            <a href="{% url 'lojaapp:clientesair'%}">SAIR</a> |         
         {% else %}
-        
-        <a href="{% url 'lojaapp:clienteregistrar' %}">CADASTRAR CLIENTES</a> |
+            <a href="{% url 'lojaapp:clienteregistrar'%}">CADASTRAR CLIENTES</a> |
+            <a href="{% url 'lojaapp:clienteentrar'%}">ENTRAR</a> |  
         {% endif %}
         <hr>
     </div>
